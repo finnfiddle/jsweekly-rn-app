@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Platform } from 'react-native';
+import PropTypes from 'prop-types';
+import { View, Text, StyleSheet } from 'react-native';
 
 export default class Tag extends Component {
+  static propTypes = {
+    style: PropTypes.oneOfType([PropTypes.number, PropTypes.object]),
+    children: PropTypes.node,
+  }
+
   static defaultProps = {
     style: {},
-  };
+  }
 
   render() {
     const { children, style } = this.props;

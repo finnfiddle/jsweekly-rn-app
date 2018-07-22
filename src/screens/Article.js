@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { StyleSheet, WebView } from 'react-native';
 import { get } from 'lodash';
 import { connect } from 'react-redux';
@@ -6,6 +7,11 @@ import { connect } from 'react-redux';
 import { YELLOW } from '../constants/colors';
 
 class ArticlePage extends Component {
+  static propTypes = {
+    issues: PropTypes.array.isRequired,
+    navigation: PropTypes.object.isRequired,
+  }
+
   static navigationOptions = ({ navigation }) => ({
     headerTitle: navigation.state.params.title,
     headerStyle: {

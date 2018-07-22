@@ -1,19 +1,30 @@
 import React, { Component } from 'react';
-import { View, PanResponder, Animated, StyleSheet, Dimensions, Text } from 'react-native';
+import PropTypes from 'prop-types';
+import { View, PanResponder, Animated, StyleSheet, Dimensions } from 'react-native';
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 const SIGNIFICANCE_THRESHOLD = width / 10;
 const isSignificant = gestureState => Math.abs(gestureState.dx) > SIGNIFICANCE_THRESHOLD;
+const animatedWidth = new Animated.Value(width);
+const negativeAnimatedWidth = new Animated.Value(-width);
 
 export default class Cards extends Component {
+  static propTypes = {
+    items: PropTypes.array.isRequired,
+    renderEmpty: PropTypes.func.isRequired,
+    renderItem: PropTypes.func.isRequired,
+    onChange: PropTypes.func,
+  }
+  
+  static defaultProps = {
+    onChange: () => {},
+    renderEmpty: () => null,
+  }
+
   state = {
     activeItem: 0,
     pan: new Animated.Value(0),
-  };
-
-  static defaultProps = {
-    renderEmpty: () => null,
   }
 
   constructor(props) {
@@ -39,22 +50,26 @@ export default class Cards extends Component {
   handleRelease(event, gestureState) {
     const { dx } = gestureState;
     if(dx < -width / 4) {
-      Animated.spring(this.state.pan, { toValue: -width })
+      Animated.timing(this.state.pan, { toValue: -width })
         .start(() => {
-          this.setState({ activeItem: this.getNextIndex() });
+          const activeItem = this.getNextIndex();
+          this.setState({ activeItem });
+          this.props.onChange(activeItem);
           this.state.pan.setValue(0);
         });  
       return;
     }
     if(dx > width / 4) {
-      Animated.spring(this.state.pan, { toValue: width })
+      Animated.timing(this.state.pan, { toValue: width })
         .start(() => {
-          this.setState({ activeItem: this.getPreviousIndex() });
+          const activeItem = this.getPreviousIndex();
+          this.setState({ activeItem });
+          this.props.onChange(activeItem);
           this.state.pan.setValue(0);
         });
       return;
     }
-    Animated.spring(this.state.pan, { toValue: 0, useNativeDriver: true }).start();
+    Animated.timing(this.state.pan, { toValue: 0 }).start();
   }
 
   getPreviousIndex() {
@@ -91,51 +106,46 @@ export default class Cards extends Component {
     const currentItem = this.getCurrentItem();
     const nextItem = this.getNextItem();
     return (
-      <Animated.View {...this._panResponder.panHandlers} style={styles.container}>
+      <Animated.View {...this._panResponder.panHandlers}>
         <Animated.View
           style={{
-            // flex: 1,
-            // minHeight: height,
-            left: this.state.pan,
             width,
             transform: [
-              { translateX: -width },
+              { translateX: Animated.add(this.state.pan, negativeAnimatedWidth) },
               { translateY: 0 },
             ],
             top: 0,
             position: 'absolute',
           }}>
-          <View style={styles.card}>
+          <View>
             {renderItem(previousItem)}
           </View>
         </Animated.View>
         <Animated.View
           style={{
-            // flex: 1,
-            // minHeight: height,
-            left: this.state.pan,
+            transform: [
+              { translateX: this.state.pan },
+              { translateY: 0 },
+            ],
             width,
             top: 0,
             position: 'absolute',
           }}>
-          <View style={styles.card}>
+          <View>
             {renderItem(currentItem)}
           </View>
         </Animated.View>
         <Animated.View
           style={{
-            // flex: 1,
-            // minHeight: height,
-            left: this.state.pan,
             width,
             transform: [
-              { translateX: width },
+              { translateX: Animated.add(this.state.pan, animatedWidth) },
               { translateY: 0 },
             ],
             top: 0,
             position: 'absolute',
           }}> 
-          <View style={styles.card}>
+          <View>
             {renderItem(nextItem)}
           </View>
         </Animated.View>
@@ -145,15 +155,4 @@ export default class Cards extends Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    // flex: 1,
-    // display: 'flex',
-    // width,
-    left: 0,
-  },
-  card: {
-    // flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.2)',
-    // width,
-  },
 })

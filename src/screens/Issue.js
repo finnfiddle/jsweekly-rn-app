@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { View, StyleSheet, Animated, Text } from 'react-native';
 import { get } from 'lodash';
 import { connect } from 'react-redux';
@@ -13,8 +14,14 @@ import { SEARCH_OFFSET } from '../constants/dimensions';
 import { tokenize, match } from '../util/search';
 
 class IssuePage extends Component {
-  static navigationOptions = ({ navigation }) => ({
-    headerTitle: '',//navigation.state.params.title,
+  static propTypes = {
+    articles: PropTypes.array.isRequired,
+    issues: PropTypes.array.isRequired,
+    navigation: PropTypes.object.isRequired,
+  }
+
+  static navigationOptions = () => ({
+    headerTitle: '',
     headerStyle: {
       backgroundColor: 'black',
       borderBottomWidth: 0,
@@ -158,7 +165,7 @@ const styles = StyleSheet.create({
     color: YELLOW,
   },
   date: {
-    fontSize: 14,
+    fontSize: 12,
     fontFamily: 'bold',
     color: YELLOW,
   },

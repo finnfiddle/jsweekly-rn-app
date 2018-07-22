@@ -1,5 +1,5 @@
 export const TITLE = {
-  ISSUES: 'issues',
+  DEFAULT: 'jsweekly',
   SEARCH: 'search',
 };
 

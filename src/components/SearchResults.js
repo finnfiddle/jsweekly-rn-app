@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import {
   View,
   Text,
@@ -6,7 +7,6 @@ import {
   StyleSheet,
   Dimensions,
   FlatList,
-  Platform,
 } from 'react-native';
 
 import { YELLOW } from '../constants/colors';
@@ -17,13 +17,20 @@ import Announcement from './Announcement';
 const { height, width } = Dimensions.get('window');
 
 export default class SearchResults extends Component {
+  static propTypes = {
+    articles: PropTypes.array.isRequired,
+    navigation: PropTypes.object.isRequired,
+    hideResults: PropTypes.bool.isRequired,
+    searchText: PropTypes.string.isRequired,
+  }
+
   render() {
     const {
       articles,
       navigation,
       hideResults,
+      searchText,
     } = this.props;
-    articles.forEach(({ href }) => console.log(href));
 
     return (
       <View
@@ -35,7 +42,11 @@ export default class SearchResults extends Component {
             keyExtractor={({ href }) => href}
             renderItem={({ item }) => (
               <TouchableOpacity
-                onPress={() => navigation.navigate('issue', { issueId: item.issueId, articleIndex: item.index })}
+                onPress={() =>
+                  navigation.navigate('searchIssue', {
+                    searchText,
+                    articleIndex: item.index,
+                  })}
               >
                 <View style={styles.listItem}>
                   <View>
@@ -73,7 +84,8 @@ const styles = StyleSheet.create({
     width,
     height: height + SEARCH_OFFSET,
     zIndex: 9,
-    padding: 15,
+    paddingLeft: 15,
+    paddingRight: 15,
     paddingBottom: 100,
   },
   listItem: {
@@ -85,7 +97,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   listItemText: {
-    fontSize: 12,
+    fontSize: 16,
     display: 'flex',
     marginRight: 4,
     fontFamily: 'default',

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { View, Text, StyleSheet, Dimensions, Platform } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 
@@ -6,10 +7,15 @@ import { YELLOW } from '../constants/colors';
 const { height } = Dimensions.get('window');
 
 export default class Announcement extends Component {
+  static propTypes = {
+    icon: PropTypes.string,
+    message: PropTypes.string,
+  }
+  
   static defaultProps = {
     icon: 'loader',
     message: '',
-  };
+  }
 
   render() {
     const { icon, message } = this.props;
@@ -31,8 +37,8 @@ const styles = StyleSheet.create({
   },
   title: {
     color: 'black',
-    fontSize: 20,
-    fontFamily: 'bold',
+    fontSize: 16,
+    fontFamily: 'default',
     marginTop: height / 4,
   },
 });

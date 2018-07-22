@@ -2,7 +2,7 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { Font, AppLoading } from 'expo';
-import { NetInfo, AsyncStorage } from 'react-native';
+import { NetInfo } from 'react-native';
 
 import Navigator from './src/Navigator';
 import scrape from './src/util/scrape';
@@ -11,6 +11,7 @@ import Announcement from './src/components/Announcement';
 
 const { store, persistor } = configureStore();
 
+/* use these to clear the cached data */
 // persistor.flush(); 
 // persistor.purge();
 // AsyncStorage.clear();
@@ -24,6 +25,7 @@ export default class App extends React.Component {
     hasTriedScraping: false,
     latestIssueAdded,
     totalIssues,
+    unscrapeableIssues,
     fontsDidLoad: false,
   };
     
@@ -49,7 +51,7 @@ export default class App extends React.Component {
     .then((resolveConnectionInfo) => {
       if (resolveConnectionInfo.type === NO_CONNECTION || resolveConnectionInfo.type === 'unknown') {
         if (this.state.hasTriedScraping) return;
-        // this.setState({ hasTriedScraping: true });
+        this.setState({ hasTriedScraping: true });
         NetInfo.addEventListener('connectionChange', this.handleScrape);
         return;
       }

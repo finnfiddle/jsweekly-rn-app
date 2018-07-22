@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { View, Text, StyleSheet, Dimensions, ScrollView, TouchableOpacity } from 'react-native';
 
 import { YELLOW } from '../constants/colors';
@@ -8,6 +9,20 @@ import Tag from './Tag';
 const { height, width } = Dimensions.get('window');
 
 export default class ArticleCard extends Component {
+  static propTypes = {
+    navigation: PropTypes.object.isRequired,
+    title: PropTypes.string.isRequired,
+    desc: PropTypes.string.isRequired,
+    onScrollStart: PropTypes.func.isRequired,
+    onScrollEnd: PropTypes.func.isRequired,
+    issueId: PropTypes.number.isRequired,
+    index: PropTypes.number.isRequired,
+    source: PropTypes.string.isRequired,
+    isVideo: PropTypes.bool.isRequired,
+    isSponsor: PropTypes.bool.isRequired,
+    category: PropTypes.string.isRequired,
+  }
+  
   render() {
     const {
       title,
@@ -31,11 +46,11 @@ export default class ArticleCard extends Component {
         >
           <View>
             <Text style={styles.title}>{title}</Text>
+            {desc && <Text style={styles.desc}>{desc}</Text>}
             <Text style={styles.source}>
               {`- ${source}`}
             </Text>
-            {desc && <Text style={styles.desc}>{desc}</Text>}
-            <View>
+            <View style={styles.tagsContainer}>
               {category !== 'main' && (
                 <Tag style={styles.tag}>{CATEGORY[category]}</Tag>
               )}
@@ -65,8 +80,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     flex: 1,
     minHeight: height - 170,
-    // minWidth: width,
-    // width,
     backgroundColor: YELLOW,
   },
   inner: {
@@ -76,34 +89,40 @@ const styles = StyleSheet.create({
     paddingTop: 15,
     paddingLeft: 15,
     paddingRight: 15,
-    paddingBottom: 50,
+    paddingBottom: 30,
     width: width - 30,
     minWidth: width - 30,
   },
   title: {
-    fontSize: 18,
+    fontSize: 22,
     fontFamily: 'bold',
     marginBottom: 20,
   },
   desc: {
-    fontSize: 14,
+    fontSize: 16,
     fontFamily: 'light',
     marginBottom: 10,
   },
   source: {
     color: 'black',
     fontFamily: 'boldItalic',
-    fontSize: 14,
+    fontSize: 16,
     marginBottom: 20,
+  },
+  tagsContainer: {
+    display: 'flex',
+    flexDirection: 'row',
   },
   button: {
     backgroundColor: 'black',
-    paddingTop: 10,
-    paddingBottom: 10,
+    paddingTop: 20,
+    paddingBottom: 20,
+    marginBottom: 15,
     width: width - 30,
     minWidth: width - 30,
     alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: 30,
   },
   buttonText: {
     color: YELLOW,

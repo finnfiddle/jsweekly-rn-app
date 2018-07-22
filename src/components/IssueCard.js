@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import {
   View,
   Text,
@@ -7,7 +8,6 @@ import {
   Dimensions,
   SectionList,
   TouchableWithoutFeedback,
-  Platform,
 } from 'react-native';
 import moment from 'moment';
 
@@ -19,6 +19,17 @@ import Puller from './Puller';
 const { height, width } = Dimensions.get('window');
 
 export default class IssueCard extends Component {
+  static propTypes = {
+    id: PropTypes.number.isRequired,
+    date: PropTypes.string.isRequired,
+    articles: PropTypes.array.isRequired,
+    onScrollStart: PropTypes.func.isRequired,
+    onScrollEnd: PropTypes.func.isRequired,
+    navigation: PropTypes.object.isRequired,
+    onPullTop: PropTypes.func.isRequired,
+    onReleasePullTop: PropTypes.func.isRequired,
+  }
+
   render() {
     const {
       id,
@@ -105,7 +116,7 @@ const styles = StyleSheet.create({
   }, 
   inner: {
     flex: 1,
-    paddingBottom: 100,
+    paddingBottom: 200,
   },
   header: {
     backgroundColor: 'black',
@@ -120,7 +131,7 @@ const styles = StyleSheet.create({
     color: YELLOW,
   },
   date: {
-    fontSize: 14,
+    fontSize: 12,
     fontFamily: 'bold',
     color: YELLOW,
   },
@@ -138,7 +149,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   listItemText: {
-    fontSize: 12,
+    fontSize: 16,
     display: 'flex',
     marginRight: 4,
     fontFamily: 'default',
@@ -155,6 +166,7 @@ const styles = StyleSheet.create({
   },
   sectionHeaderText: {
     fontFamily: 'h1',
+    fontSize: 16,
   },
   tag: {
     marginTop: 0,

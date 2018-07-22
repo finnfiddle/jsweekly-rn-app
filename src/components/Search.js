@@ -1,17 +1,36 @@
 import React, { Component } from 'react';
-import { View, Dimensions, Animated, StyleSheet, TextInput, Platform } from 'react-native';
+import { View, Animated, StyleSheet, TextInput } from 'react-native';
+import PropTypes from 'prop-types';
 
 import SearchResults from './SearchResults';
 import { SEARCH_OFFSET } from '../constants/dimensions';
 import { YELLOW } from '../constants/colors';
 
-const { height, width } = Dimensions.get('window');
 
 export default class Search extends Component {
+  static propTypes = {
+    navigation: PropTypes.object.isRequired,
+    children: PropTypes.node.isRequired,
+    top: PropTypes.object.isRequired,
+    onSearch: PropTypes.func.isRequired,
+    text: PropTypes.string.isRequired,
+    results: PropTypes.array.isRequired,
+    showResults: PropTypes.bool.isRequired,
+  }
+
   render() {
-    const { children, top, onSearch, text, results, showResults, navigation } = this.props;
+    const {
+      children,
+      top,
+      onSearch,
+      text,
+      results,
+      showResults,
+      navigation,
+    } = this.props;
+
     return (
-      <Animated.View style={{ top }}>
+      <Animated.View style={{ transform: [ { translateY: top } ]}}>
         <View style={styles.searchContainer}>
           <TextInput
             style={styles.searchInput}
@@ -22,7 +41,12 @@ export default class Search extends Component {
           />
         </View>
         {showResults && (
-          <SearchResults articles={results} navigation={navigation} hideResults={!text.length} />
+          <SearchResults
+            articles={results}
+            navigation={navigation}
+            hideResults={!text.length}
+            searchText={text}
+          />
         )}
         {children}
       </Animated.View>
@@ -48,6 +72,6 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
     paddingRight: 15,
     fontSize: 20,
-    fontFamily: Platform.OS === 'ios' ? 'Avenir' : 'Roboto',
+    fontFamily: 'light',
   }
 });

@@ -1,18 +1,17 @@
 {
   "expo": {
-    "name": "jsweekly",
-    "description": "This project is really great.",
+    "name": "JSweekly",
+    "description": "JavaScript Weekly newsletter archive and search.",
     "slug": "jsweekly",
     "privacy": "public",
     "sdkVersion": "28.0.0",
     "platforms": ["ios", "android"],
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/icon.jpg",
     "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "image": "./assets/splash.jpg",
+      "backgroundColor": "#f7df1e"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
