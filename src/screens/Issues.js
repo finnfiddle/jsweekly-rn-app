@@ -104,8 +104,8 @@ class IssuesPage extends React.Component {
 
   render() {
     const { navigation, issues } = this.props;
-
     let { searchTop, showSearchResults, searchText, searchResults } = this.state;
+
     return (
       <View style={styles.container}>
         <Search
@@ -136,7 +136,7 @@ class IssuesPage extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: YELLOW },
+  container: { display: 'flex', flex: 1, backgroundColor: YELLOW },
 });
 
 export default connect(state => state)(IssuesPage);

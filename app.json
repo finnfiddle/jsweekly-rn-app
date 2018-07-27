@@ -8,9 +8,9 @@
     "platforms": ["ios", "android"],
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.jpg",
+    "icon": "./assets/icon.png",
     "splash": {
-      "image": "./assets/splash.jpg",
+      "image": "./assets/splash.png",
       "backgroundColor": "#f7df1e"
     },
     "updates": {
@@ -21,6 +21,19 @@
     ],
     "ios": {
       "supportsTablet": true
+    },
+    "githubUrl": "https://github.com/finnfiddle/jsweekly-rn-app",
+    "hooks": {
+      "postPublish": [
+        {
+          "file": "sentry-expo/upload-sourcemaps",
+          "config": {
+            "organization": "finnfiddle",
+            "project": "jsweekly",
+            "authToken": "d858433b8d3c4fc3b527bdb6b543587e4b63e02df24f40a4861ae21ed285ed6f"
+          }
+        }
+      ]
     }
   }
 }

@@ -1,3 +1,4 @@
+import fetch from 'isomorphic-fetch';
 import cheerio from 'react-native-cheerio';
 import moment from 'moment';
 import Promise from 'bluebird';
@@ -81,7 +82,7 @@ const extractMeta = ($el, issueVersion) => {
 const cleanEmojis = text => {
   const matches = [];
   let match;
-  while (match = EMOJI_REGEX.exec(text)) matches.push(match);
+  while (match = EMOJI_REGEX.exec(text)) matches.push(match); // eslint-disable-line
   return matches.reverse().reduce((acc, [emoji]) => acc.replace(emoji, ''), text).trim();
 };
 

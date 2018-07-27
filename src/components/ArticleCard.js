@@ -44,9 +44,9 @@ export default class ArticleCard extends Component {
           onScrollBeginDrag={onScrollStart}
           onScrollEndDrag={onScrollEnd}
         >
-          <View>
+          <View style={{ flexGrow: 1, display: 'flex', flex: 1 }}>
             <Text style={styles.title}>{title}</Text>
-            {desc && <Text style={styles.desc}>{desc}</Text>}
+            {!!desc && <Text style={styles.desc}>{desc}</Text>}
             <Text style={styles.source}>
               {`- ${source}`}
             </Text>
@@ -54,21 +54,23 @@ export default class ArticleCard extends Component {
               {category !== 'main' && (
                 <Tag style={styles.tag}>{CATEGORY[category]}</Tag>
               )}
-              {isVideo && (
+              {!!isVideo && (
                 <Tag style={styles.tag}>video</Tag>
               )}
-              {isSponsor && (
+              {!!isSponsor && (
                 <Tag style={styles.tag}>sponsor</Tag>
               )}
             </View>
           </View>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('article', { issueId, articleIndex: index })}
-          >
-            <View style={styles.button}>
-              <Text style={styles.buttonText}>View Online</Text>
-            </View>
-          </TouchableOpacity>
+          <View style={styles.button}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('article', { issueId, articleIndex: index })}
+            >
+              <View style={styles.buttonInner}>
+                <Text style={styles.buttonText}>View Online</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
         </ScrollView>
       </View>
     )
@@ -79,7 +81,7 @@ const styles = StyleSheet.create({
   container: {
     display: 'flex',
     flex: 1,
-    minHeight: height - 170,
+    minHeight: height - 152,
     backgroundColor: YELLOW,
   },
   inner: {
@@ -90,8 +92,7 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
     paddingRight: 15,
     paddingBottom: 30,
-    width: width - 30,
-    minWidth: width - 30,
+    width: width,
   },
   title: {
     fontSize: 22,
@@ -114,18 +115,28 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   button: {
-    backgroundColor: 'black',
-    paddingTop: 20,
-    paddingBottom: 20,
+    height: 50,
+    display: 'flex',
+    borderColor: 'black',
+    borderWidth: 1,
+    backgroundColor: YELLOW,
     marginBottom: 15,
     width: width - 30,
     minWidth: width - 30,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 30,
+    bottom: 0,
+  },
+  buttonInner: {
+    flex: 1,
+    height: 50,
+    width: width - 30,
+    paddingTop: 15,
+    paddingBottom: 15,
   },
   buttonText: {
-    color: YELLOW,
+    color: 'black',
     fontFamily: 'bold',
     textAlign: 'center',
   },

@@ -8,11 +8,13 @@ import {
   Dimensions,
   SectionList,
   TouchableWithoutFeedback,
+  Animated,
 } from 'react-native';
 import moment from 'moment';
 
 import { YELLOW } from '../constants/colors';
 import { CATEGORY } from '../constants/text';
+import { HEADER_HEIGHT } from '../constants/dimensions';
 import Tag from './Tag';
 import Puller from './Puller';
 
@@ -21,7 +23,7 @@ const { height, width } = Dimensions.get('window');
 export default class IssueCard extends Component {
   static propTypes = {
     id: PropTypes.number.isRequired,
-    date: PropTypes.string.isRequired,
+    date: PropTypes.oneOfType([PropTypes.instanceOf(Date), PropTypes.string]),
     articles: PropTypes.array.isRequired,
     onScrollStart: PropTypes.func.isRequired,
     onScrollEnd: PropTypes.func.isRequired,
@@ -30,13 +32,31 @@ export default class IssueCard extends Component {
     onReleasePullTop: PropTypes.func.isRequired,
   }
 
+  state = {
+    top: new Animated.Value(0),
+  }
+
+  constructor(props) {
+    super(props);
+    this.handleScrollEndDrag = this.handleScrollEndDrag.bind(this);
+    this.handleScrollBeginDrag = this.handleScrollBeginDrag.bind(this);
+  }
+
+  handleScrollEndDrag(event) {
+    this.setState({ scrolling: false });
+    this.props.onScrollEnd(event);
+  }
+      
+  handleScrollBeginDrag(event) {
+    this.setState({ scrolling: true });
+    this.props.onScrollStart(event);
+  }
+
   render() {
     const {
       id,
       date,
       articles,
-      onScrollStart,
-      onScrollEnd,
       navigation,
       onPullTop,
       onReleasePullTop,
@@ -54,18 +74,48 @@ export default class IssueCard extends Component {
           { title: CATEGORY[key], data: articlesMap[key] },
         ] : acc, []);
 
+    const translateY = Animated.diffClamp(
+      Animated.multiply(this.state.top, -1),
+      -HEADER_HEIGHT,
+      0
+    );
+
     return (
-      <View style={styles.container}>
-        <View style={styles.inner}> 
+      <Animated.View style={styles.container}>
+        <Animated.View style={styles.inner}> 
           <Puller onPull={onPullTop} onRelease={onReleasePullTop}>
-            <View style={styles.header}>
+            <Animated.View
+              style={[
+                styles.header,
+                { transform: [{ translateY }] }
+              ]}
+            >
               <Text style={styles.date}>{moment(date).format('MMMM DD, YYYY').toUpperCase()}</Text>
               <Text style={styles.title}>{`Issue #${id}`}</Text>
-            </View>
+            </Animated.View>
           </Puller>
           <TouchableWithoutFeedback>
-            <View style={styles.content}>
-              <SectionList 
+            <Animated.View
+              style={[
+                styles.content,
+                { transform: [{ translateY }] }
+              ]}
+            >
+              <SectionList
+                onScrollEndDrag={this.handleScrollEndDrag}
+                onScrollBeginDrag={this.handleScrollBeginDrag}
+                onScroll={event => {
+                  if (this.state.scrolling) {
+                    Animated.event([{
+                      nativeEvent: {
+                        contentOffset: {
+                          y: this.state.top
+                        }
+                      }
+                    }])(event);
+                  }
+                }}
+                contentContainerStyle={styles.list}
                 renderSectionHeader={({section: {title}}) => title ? (
                   <View style={styles.sectionHeaderContainer}>
                     <Text style={styles.sectionHeaderText}>{title}</Text>
@@ -96,27 +146,26 @@ export default class IssueCard extends Component {
                 directionalLockEnabled
                 pinchGestureEnabled={false}
                 stickySectionHeadersEnabled={false}
-                onScrollBeginDrag={onScrollStart}
-                onScrollEndDrag={onScrollEnd}
               />
-            </View>
+            </Animated.View>
           </TouchableWithoutFeedback>
-        </View>
-      </View>
+        </Animated.View>
+      </Animated.View>
     )
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: -1,
     height,
     width,
-    backgroundColor: YELLOW,
+    display: 'flex',
   }, 
   inner: {
-    flex: 1,
-    paddingBottom: 200,
+    flex: -1,
+    height,
+    width,
   },
   header: {
     backgroundColor: 'black',
@@ -136,13 +185,16 @@ const styles = StyleSheet.create({
     color: YELLOW,
   },
   content: {
-    paddingRight: 15,
     paddingBottom: 15,
-    paddingLeft: 15,
+  },
+  list: {
+    paddingBottom: 200,
   },
   listItem: {
     paddingTop: 15,
     paddingBottom: 15,
+    paddingRight: 15,
+    paddingLeft: 15,
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
     flexDirection: 'row',
@@ -163,6 +215,8 @@ const styles = StyleSheet.create({
   sectionHeaderContainer: {
     paddingTop: 30,
     paddingBottom: 15,
+    paddingRight: 15,
+    paddingLeft: 15,
   },
   sectionHeaderText: {
     fontFamily: 'h1',

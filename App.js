@@ -1,68 +1,26 @@
-/* global require, Promise */
+/* global require */
 import React from 'react';
 import { Provider } from 'react-redux';
 import { Font, AppLoading } from 'expo';
-import { NetInfo } from 'react-native';
+import Sentry from 'sentry-expo';
 
 import Navigator from './src/Navigator';
-import scrape from './src/util/scrape';
 import configureStore from './src/util/configureStore';
-import Announcement from './src/components/Announcement'; 
+import scrape from './src/util/scrape';
 
 const { store, persistor } = configureStore();
 
-/* use these to clear the cached data */
-// persistor.flush(); 
-// persistor.purge();
-// AsyncStorage.clear();
-
-const { latestIssueAdded, totalIssues, unscrapeableIssues } = store.getState();
-const NO_CONNECTION = 'none';
+Sentry.config('https://6f6918124ee141c898bec94dbde81dd2@sentry.io/1250794').install(); 
 
 export default class App extends React.Component {
   state = {
-    hasScraped: false,
-    hasTriedScraping: false,
-    latestIssueAdded,
-    totalIssues,
-    unscrapeableIssues,
     fontsDidLoad: false,
   };
     
   constructor(props) {
     super(props);
-    store.subscribe(() => {
-      const { latestIssueAdded, totalIssues, unscrapeableIssues } = store.getState();
-      this.setState({ latestIssueAdded, totalIssues, unscrapeableIssues });
-    });
-    this.handleScrape = this.handleScrape.bind(this);
     this.handleLoadFonts();
-    this.handleScrape();
-  }
-
-  handleScrape(connectionInfo) {
-    new Promise(resolve => {
-      if (connectionInfo) {
-      resolve(connectionInfo);
-        return;
-      }
-      return NetInfo.getConnectionInfo().then(resolve);
-    })
-    .then((resolveConnectionInfo) => {
-      if (resolveConnectionInfo.type === NO_CONNECTION || resolveConnectionInfo.type === 'unknown') {
-        if (this.state.hasTriedScraping) return;
-        this.setState({ hasTriedScraping: true });
-        NetInfo.addEventListener('connectionChange', this.handleScrape);
-        return;
-      }
-      scrape(store).then(() => {
-        this.setState({ hasScraped: true });
-        NetInfo.removeEventListener('connectionChange', this.handleScrape);
-      })
-      .catch(error => {
-        console.log(error);
-      });
-    });
+    scrape(store);
   }
 
   handleLoadFonts() {
@@ -79,16 +37,14 @@ export default class App extends React.Component {
   }
   
   render() {
-    const { hasScraped, hasTriedScraping, fontsDidLoad } = this.state;
+    const { fontsDidLoad } = this.state;
+    
     if (!fontsDidLoad) return <AppLoading />;
-    return (hasScraped || hasTriedScraping) ? ( 
+
+    return ( 
       <Provider store={store} persistor={persistor}> 
         <Navigator />
       </Provider>
-    ) : (
-      <Announcement
-        message={`scraping ${this.state.latestIssueAdded}/${this.state.totalIssues === 'Y' ? this.state.totalIssues : this.state.totalIssues - this.state.unscrapeableIssues.length} issues`}
-      />
     );
   }
 }

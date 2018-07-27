@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, StyleSheet, Dimensions, Platform } from 'react-native';
+import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 
 import { YELLOW } from '../constants/colors';

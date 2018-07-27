@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, PanResponder, Animated, StyleSheet, Dimensions } from 'react-native';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const SIGNIFICANCE_THRESHOLD = width / 10;
 const isSignificant = gestureState => Math.abs(gestureState.dx) > SIGNIFICANCE_THRESHOLD;
@@ -106,45 +106,33 @@ export default class Cards extends Component {
     const currentItem = this.getCurrentItem();
     const nextItem = this.getNextItem();
     return (
-      <Animated.View {...this._panResponder.panHandlers}>
+      <Animated.View {...this._panResponder.panHandlers} style={styles.container}>
         <Animated.View
-          style={{
-            width,
+          style={[styles.card, {
             transform: [
               { translateX: Animated.add(this.state.pan, negativeAnimatedWidth) },
-              { translateY: 0 },
             ],
-            top: 0,
-            position: 'absolute',
-          }}>
+          }]}>
           <View>
             {renderItem(previousItem)}
           </View>
         </Animated.View>
         <Animated.View
-          style={{
+          style={[styles.card, {
             transform: [
               { translateX: this.state.pan },
-              { translateY: 0 },
             ],
-            width,
-            top: 0,
-            position: 'absolute',
-          }}>
+          }]}>
           <View>
             {renderItem(currentItem)}
           </View>
         </Animated.View>
         <Animated.View
-          style={{
-            width,
+          style={[styles.card, {
             transform: [
               { translateX: Animated.add(this.state.pan, animatedWidth) },
-              { translateY: 0 },
             ],
-            top: 0,
-            position: 'absolute',
-          }}> 
+          }]}> 
           <View>
             {renderItem(nextItem)}
           </View>
@@ -155,4 +143,17 @@ export default class Cards extends Component {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: -1,
+    height,
+    width,
+    display: 'flex',
+  }, 
+  card: {
+    width,
+    height,
+    flex: -1,
+    top: 0,
+    position: 'absolute',
+  },
 })

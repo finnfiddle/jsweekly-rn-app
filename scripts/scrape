@@ -1,0 +1,15 @@
+#!/usr/bin/env node
+
+require("babel-register");
+const fs = require('fs');
+const path = require('path');
+const scrape = require('../src/util/scrape').default;
+const { rootReducer } = require('../src/util/configureStore');
+const { createStore } = require('redux');
+
+const store = createStore(rootReducer)
+
+scrape(store).then(() => {
+  const data = store.getState();
+  fs.writeFileSync(path.join(__dirname, '../data/initialState.json'), JSON.stringify(data));
+});
