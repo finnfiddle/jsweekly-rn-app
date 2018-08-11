@@ -1,4 +1,5 @@
-import fetch from 'isomorphic-fetch';
+require('es6-promise').polyfill();
+require('fetch-everywhere');
 import cheerio from 'react-native-cheerio';
 import moment from 'moment';
 import Promise from 'bluebird';

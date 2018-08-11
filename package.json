@@ -6,8 +6,9 @@
     "scrape": "./scripts/scrape"
   },
   "dependencies": {
+    "es6-promise": "^4.2.4",
     "expo": "^28.0.0",
-    "isomorphic-fetch": "^2.2.1",
+    "fetch-everywhere": "^1.0.5",
     "lodash": "^4.17.10",
     "moment": "^2.22.2",
     "prop-types": "^15.6.2",

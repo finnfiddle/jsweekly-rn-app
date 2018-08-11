@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     marginRight: 15,
     paddingLeft: 15,
     paddingRight: 15,
-    fontSize: 20,
+    fontSize: 16,
     fontFamily: 'light',
   }
 });

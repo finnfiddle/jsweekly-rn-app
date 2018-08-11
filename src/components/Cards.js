@@ -4,8 +4,9 @@ import { View, PanResponder, Animated, StyleSheet, Dimensions } from 'react-nati
 
 const { width, height } = Dimensions.get('window');
 
-const SIGNIFICANCE_THRESHOLD = width / 10;
-const isSignificant = gestureState => Math.abs(gestureState.dx) > SIGNIFICANCE_THRESHOLD;
+const CAPTURE_SIGNIFICANCE = width / 10;
+const SWIP_SIGNIFICANCE = width / 6;
+const isSignificant = gestureState => Math.abs(gestureState.dx) > CAPTURE_SIGNIFICANCE;
 const animatedWidth = new Animated.Value(width);
 const negativeAnimatedWidth = new Animated.Value(-width);
 
@@ -49,7 +50,7 @@ export default class Cards extends Component {
 
   handleRelease(event, gestureState) {
     const { dx } = gestureState;
-    if(dx < -width / 4) {
+    if(dx < -SWIP_SIGNIFICANCE) {
       Animated.timing(this.state.pan, { toValue: -width })
         .start(() => {
           const activeItem = this.getNextIndex();
@@ -59,7 +60,7 @@ export default class Cards extends Component {
         });  
       return;
     }
-    if(dx > width / 4) {
+    if(dx > SWIP_SIGNIFICANCE) {
       Animated.timing(this.state.pan, { toValue: width })
         .start(() => {
           const activeItem = this.getPreviousIndex();

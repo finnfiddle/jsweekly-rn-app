@@ -95,14 +95,14 @@ const styles = StyleSheet.create({
     width: width,
   },
   title: {
-    fontSize: 22,
+    fontSize: 16,
     fontFamily: 'bold',
     marginBottom: 20,
   },
   desc: {
     fontSize: 16,
     fontFamily: 'light',
-    marginBottom: 10,
+    marginBottom: 20,
   },
   source: {
     color: 'black',

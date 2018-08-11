@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
   },
   title: {
-    fontSize: 40,
+    fontSize: 30,
     fontFamily: 'h1',
     color: YELLOW,
   },

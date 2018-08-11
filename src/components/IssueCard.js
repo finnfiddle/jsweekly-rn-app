@@ -14,7 +14,6 @@ import moment from 'moment';
 
 import { YELLOW } from '../constants/colors';
 import { CATEGORY } from '../constants/text';
-import { HEADER_HEIGHT } from '../constants/dimensions';
 import Tag from './Tag';
 import Puller from './Puller';
 
@@ -30,26 +29,6 @@ export default class IssueCard extends Component {
     navigation: PropTypes.object.isRequired,
     onPullTop: PropTypes.func.isRequired,
     onReleasePullTop: PropTypes.func.isRequired,
-  }
-
-  state = {
-    top: new Animated.Value(0),
-  }
-
-  constructor(props) {
-    super(props);
-    this.handleScrollEndDrag = this.handleScrollEndDrag.bind(this);
-    this.handleScrollBeginDrag = this.handleScrollBeginDrag.bind(this);
-  }
-
-  handleScrollEndDrag(event) {
-    this.setState({ scrolling: false });
-    this.props.onScrollEnd(event);
-  }
-      
-  handleScrollBeginDrag(event) {
-    this.setState({ scrolling: true });
-    this.props.onScrollStart(event);
   }
 
   render() {
@@ -74,21 +53,12 @@ export default class IssueCard extends Component {
           { title: CATEGORY[key], data: articlesMap[key] },
         ] : acc, []);
 
-    const translateY = Animated.diffClamp(
-      Animated.multiply(this.state.top, -1),
-      -HEADER_HEIGHT,
-      0
-    );
-
     return (
       <Animated.View style={styles.container}>
         <Animated.View style={styles.inner}> 
           <Puller onPull={onPullTop} onRelease={onReleasePullTop}>
             <Animated.View
-              style={[
-                styles.header,
-                { transform: [{ translateY }] }
-              ]}
+              style={styles.header}
             >
               <Text style={styles.date}>{moment(date).format('MMMM DD, YYYY').toUpperCase()}</Text>
               <Text style={styles.title}>{`Issue #${id}`}</Text>
@@ -96,25 +66,9 @@ export default class IssueCard extends Component {
           </Puller>
           <TouchableWithoutFeedback>
             <Animated.View
-              style={[
-                styles.content,
-                { transform: [{ translateY }] }
-              ]}
+              style={styles.content}
             >
               <SectionList
-                onScrollEndDrag={this.handleScrollEndDrag}
-                onScrollBeginDrag={this.handleScrollBeginDrag}
-                onScroll={event => {
-                  if (this.state.scrolling) {
-                    Animated.event([{
-                      nativeEvent: {
-                        contentOffset: {
-                          y: this.state.top
-                        }
-                      }
-                    }])(event);
-                  }
-                }}
                 contentContainerStyle={styles.list}
                 renderSectionHeader={({section: {title}}) => title ? (
                   <View style={styles.sectionHeaderContainer}>
@@ -175,7 +129,7 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
   },
   title: {
-    fontSize: 40,
+    fontSize: 30,
     fontFamily: 'h1',
     color: YELLOW,
   },
